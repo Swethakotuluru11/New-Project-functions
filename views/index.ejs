@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Social Media Dashboard</title>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f5f5f5;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+ 
+      h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+        color: #000;
+        text-shadow: none;
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+      }
+ 
+      p {
+        font-size: 1.2em;
+        color: #000;
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+        animation-delay: 0.5s;
+      }
+ 
+      .button-link {
+        margin-top: 30px;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        border: 2px solid #0099ff;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #0099ff;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+        animation-delay: 0.5s;
+      }
+ 
+      .main-content {
+        padding: 50px;
+        background-color: rgba(255, 255, 255, 0.9);
+        margin-top: 100px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+        animation-delay: 0.5s;
+      }
+ 
+      /* Background animation */
+      .background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b81, #ffecb3, #c1c8e4);
+        animation: gradient 0.5s ease infinite;
+        z-index: -1;
+      }
+ 
+      /* Fade-in animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+ 
+      /* Gradient animation for background */
+      @keyframes gradient {
+        0% {
+          background: linear-gradient(45deg, #ff6b81, #ffecb3, #c1c8e4);
+        }
+        50% {
+          background: linear-gradient(45deg, #a1c4fd, #c2e9fb, #f1c6c2);
+        }
+        100% {
+          background: linear-gradient(45deg, #ff6b81, #ffecb3, #c1c8e4);
+        }
+      }
+ 
+      /* Media Query for mobile responsiveness */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.2em;
+        }
+ 
+        p {
+          font-size: 1em;
+        }
+ 
+        .button-link {
+          font-size: 1em;
+          padding: 10px 20px;
+        }
+ 
+        .main-content {
+          padding: 30px;
+        }
+      }
+ 
+      #addPostBtn {
+        margin: 20px 0;
+        padding: 10px 20px;
+        background-color: #0099ff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.1em;
+        cursor: pointer;
+      }
+ 
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f5f5f5;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+ 
+      h1 {
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+ 
+      .post-form,
+      .post-list {
+        width: 80%;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+ 
+      label,
+      input,
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        color: #333;
+      }
+ 
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+ 
+      button {
+        position: right;
+        background-color: #0099ff;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+ 
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+ 
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+ 
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+ 
+      th {
+        background-color: #f0f0f0;
+      }
+ 
+      .pagination button {
+        background-color: #0099ff;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        margin: 0 5px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+ 
+      .pagination button:hover {
+        background-color: #0077cc;
+      }
+ 
+      .total-posts {
+        font-size: 1.2em;
+        color: #333;
+        margin-bottom: 20px;
+      }
+ 
+      .error-message {
+        color: red;
+        font-size: 1.1em;
+        margin-top: 5px;
+        text-align: left;
+      }
+      .post {
+        border-bottom: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+ 
+      .post-title {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+      }
+ 
+      .post-text {
+        font-size: 1.1em;
+        color: #333;
+        margin-top: 10px;
+      }
+ 
+      .post-image {
+        max-width: 100%;
+        margin-top: 10px;
+        border-radius: 8px;
+        width: 50px;
+        height: 50px;
+      }
+ 
+      .post-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+ 
+      .edit-post-btn,
+      .delete-post-btn {
+        padding: 8px 12px;
+        margin-left: 5px;
+        cursor: pointer;
+        background-color: #0099ff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.1em;
+      }
+    </style>
+  </head>
+ 
+  <body>
+    <div class="background"></div>
+ 
+    <div class="main-content">
+      <h1>Welcome to the Social Media Dashboard App!</h1>
+ 
+      <p id="welcomeMessage">
+        <% if (username) { %> Welcome, <%= username %>! You are successfully
+        logged in. Manage your social media accounts and create posts.
+      </p>
+ 
+      <div id="postListSection">
+        <button id="addPostBtn" onclick="redirectToPostCreation()">
+          Add Post
+        </button>
+ 
+        <button id="logoutBtn" onclick="logout()">Logout</button>
+ 
+        <div class="total-posts" id="totalPosts"></div>
+ 
+        <div id="postListSection">
+          <table id="postTable" style="display: none">
+            <thead>
+              <tr>
+                <th>Serial No.</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="postList"></tbody>
+          </table>
+          <p id="noPostsMessage" style="display: none"></p>
+          <div>
+            <div class="pagination" id="pagination"></div>
+          </div>
+ 
+          <div class="post-form" id="editPostForm" style="display: none">
+            <h2>Edit Post</h2>
+            <label for="title">Title:</label>
+            <input type="text" id="title" required />
+ 
+            <label for="text">Text:</label>
+            <textarea id="text" required></textarea>
+ 
+            <label for="image">Image:</label>
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onchange="previewImage(event)"
+            />
+ 
+            <div id="imagePreviewContainer" style="display: none">
+              <h3>Image Preview</h3>
+              <img
+                id="imagePreview"
+                src=""
+                alt="Preview Image"
+                style="max-width: 200px; height: auto"
+              />
+            </div>
+ 
+            <p id="imageErrorMessage" style="color: red; font-size: 1em"></p>
+ 
+            <button onclick="submitEditPost()">Submit</button>
+            <button onclick="resetForm()">Cancel</button>
+          </div>
+ 
+          <% } else { %> Please <a href="/login">log in</a> or
+          <a href="/register">register</a> to continue. <% } %>
+ 
+          <script>
+            const posts = [];
+            const postsPerPage = 2;
+            let currentPage = 1;
+            let editingPostId = null;
+ 
+            function previewImage(event) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              const imagePreviewContainer = document.getElementById(
+                "imagePreviewContainer"
+              );
+              const imagePreview = document.getElementById("imagePreview");
+ 
+              imagePreviewContainer.style.display = "none"; // Hide preview if no valid file selected
+ 
+              if (file) {
+                const fileType = file.type;
+                const fileSize = file.size;
+                const validFileTypes = [
+                  "application/pdf",
+                  "application/msword",
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                  "application/vnd.ms-excel",
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  "image/png",
+                  "image/jpeg",
+                ];
+ 
+                if (fileSize > 500 * 1024) {
+                  document.getElementById("imageErrorMessage").textContent =
+                    "File size exceeds the 500KB limit. Please upload a smaller file.";
+                  return;
+                } else {
+                  document.getElementById("imageErrorMessage").textContent = "";
+                }
+ 
+                if (validFileTypes.includes(fileType)) {
+                  if (fileType.startsWith("image/")) {
+                    reader.onload = function (e) {
+                      imagePreview.src = e.target.result;
+                      imagePreviewContainer.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                  } else {
+                    imagePreviewContainer.style.display = "none";
+                  }
+                } else {
+                  document.getElementById("imageErrorMessage").textContent =
+                    "Invalid file type. Please upload a valid file (PDF, DOC, XLS, XLSX, PNG, JPEG).";
+                }
+              }
+            }
+ 
+            function resetForm() {
+              document.getElementById("title").value = "";
+              document.getElementById("text").value = "";
+              document.getElementById("image").value = "";
+              editingPostId = null;
+              document.getElementById("editPostForm").style.display = "none";
+              document.querySelector(".post-list").style.display = "block";
+            }
+ 
+            function submitEditPost() {
+              const title = document.getElementById("title").value;
+              const text = document.getElementById("text").value;
+              const image = document.getElementById("image").files[0];
+ 
+              const formData = new FormData();
+              formData.append("title", title);
+              formData.append("text", text);
+              if (image) formData.append("image", image);
+ 
+              fetch(`/posts/${editingPostId}`, {
+                method: "PUT",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+                body: formData,
+              })
+                .then((data) => {
+                  if (data.ok) {
+                    window.location.reload();
+                    const updatedPost = data.post;
+                    const index = posts.findIndex(
+                      (p) => p._id === editingPostId
+                    );
+                    posts[index] = updatedPost;
+                    updatePostList();
+                    resetForm();
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error updating post", error);
+                });
+            }
+ 
+            function editPost(postId) {
+              editingPostId = postId;
+              const post = posts.find((p) => p._id === postId);
+              if (post) {
+                document.getElementById("title").value = post.title;
+                document.getElementById("text").value = post.text;
+ 
+                document.getElementById("editPostForm").style.display = "block";
+                document.querySelector(".post-list").style.display = "none";
+ 
+                const imagePreviewContainer = document.getElementById(
+                  "imagePreviewContainer"
+                );
+                const imagePreview = document.getElementById("imagePreview");
+ 
+                if (post.imageUrl) {
+                  imagePreviewContainer.style.display = "block";
+                  imagePreview.src = post.imageUrl;
+                } else {
+                  imagePreviewContainer.style.display = "none";
+                }
+              }
+            }
+ 
+            function deletePost(postId) {
+              fetch(`/posts/${postId}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              })
+                .then((data) => {
+                  if (data.ok) {
+                    const index = posts.findIndex(
+                      (post) => post._id === postId
+                    );
+                    if (index !== -1) posts.splice(index, 1);
+                    updatePostList();
+                  } else {
+                    console.error("Error deleting post", data);
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error deleting post", error);
+                });
+            }
+ 
+            function updatePostList() {
+              const postList = document.getElementById("postList");
+              const postTable = document.getElementById("postTable");
+              const noPostsMessage = document.getElementById("noPostsMessage");
+ 
+              postList.innerHTML = "";
+ 
+              if (posts.length === 0) {
+                if (!noPostsMessage) {
+                  const noPostsMessageElement = document.createElement("p");
+                  noPostsMessageElement.id = "noPostsMessage";
+                  noPostsMessageElement.textContent = "No posts available.";
+                  postTable.style.display = "none";
+                  document
+                    .querySelector("#postListSection")
+                    .appendChild(noPostsMessageElement);
+                }
+              } else {
+                if (noPostsMessage) {
+                  noPostsMessage.remove();
+                }
+                postTable.style.display = "table";
+ 
+                const start = (currentPage - 1) * postsPerPage;
+                const end = start + postsPerPage;
+                const postsToShow = posts.slice(start, end);
+ 
+                postsToShow.forEach((post, index) => {
+                  const row = document.createElement("tr");
+ 
+                  const serialCell = document.createElement("td");
+                  serialCell.textContent = start + index + 1;
+                  row.appendChild(serialCell);
+ 
+                  const titleCell = document.createElement("td");
+                  titleCell.textContent = post.title;
+                  row.appendChild(titleCell);
+ 
+                  const descriptionCell = document.createElement("td");
+                  descriptionCell.textContent = post.text;
+                  row.appendChild(descriptionCell);
+ 
+                  const imageCell = document.createElement("td");
+                  const imagePreview = document.createElement("img");
+                  imagePreview.src = post.imageUrl
+                    ? post.imageUrl
+                    : "https://via.placeholder.com/100";
+                  imagePreview.style.maxWidth = "80px";
+                  imagePreview.style.maxHeight = "80px";
+                  imagePreview.style.borderRadius = "8px";
+                  imageCell.appendChild(imagePreview);
+                  row.appendChild(imageCell);
+ 
+                  const actionsCell = document.createElement("td");
+ 
+                  const editButton = document.createElement("button");
+                  editButton.textContent = "Edit";
+                  editButton.classList.add("edit-post-btn");
+                  editButton.onclick = () => editPost(post._id);
+ 
+                  const deleteButton = document.createElement("button");
+                  deleteButton.textContent = "Delete";
+                  deleteButton.classList.add("delete-post-btn");
+                  deleteButton.onclick = () => deletePost(post._id);
+ 
+                  actionsCell.appendChild(editButton);
+                  actionsCell.appendChild(deleteButton);
+ 
+                  row.appendChild(actionsCell);
+                  postList.appendChild(row);
+                });
+ 
+                updatePagination();
+              }
+            }
+ 
+            function updatePagination() {
+              const totalPages = Math.ceil(posts.length / postsPerPage);
+              const pagination = document.getElementById("pagination");
+              pagination.innerHTML = "";
+ 
+              if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                  const pageButton = document.createElement("button");
+                  pageButton.textContent = i;
+                  pageButton.onclick = () => {
+                    currentPage = i;
+                    updatePostList();
+                  };
+                  pagination.appendChild(pageButton);
+                }
+              }
+            }
+ 
+            function fetchPosts() {
+              fetch("/posts", {
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  posts.push(...data.posts);
+                  updatePostList();
+                })
+                .catch((error) => {
+                  console.error("Error fetching posts", error);
+                });
+            }
+ 
+            window.onload = fetchPosts;
+ 
+            function logout() {
+              console.log("i am inside logout");
+              fetch("/logout", {
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+              })
+                .then((data) => {
+                  localStorage.removeItem("token");
+                  window.location.href = "/login";
+                })
+                .catch((error) => {
+                  console.error("Error while logging out", error);
+                });
+            }
+ 
+            function redirectToPostCreation() {
+              window.location.href = "/post";
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+ 

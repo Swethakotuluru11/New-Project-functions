@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create and Manage Posts</title>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f5f5f5;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+ 
+      header {
+        background-color: #0077cc;
+        color: #fff;
+        padding: 20px;
+        text-align: right;
+      }
+ 
+      h1 {
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+ 
+      .post-form {
+        width: 80%;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+ 
+      label,
+      input,
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        color: #333;
+      }
+ 
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+ 
+      button {
+        background-color: #0099ff;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+ 
+      .error-message {
+        color: red;
+        font-size: 1.1em;
+        margin-top: 5px;
+        text-align: left;
+      }
+    </style>
+  </head>
+ 
+  <body>
+    <header>
+      <button id="logoutBtn" onclick="logout()">Logout</button>
+    </header>
+ 
+    <h1>Create and Manage Posts</h1>
+ 
+    <div id="createPostSection" class="post-form">
+      <div class="form-field">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required />
+        <div id="titleErrorMessage" class="error-message"></div>
+      </div>
+ 
+      <div class="form-field">
+        <label for="text">Description:</label>
+        <textarea id="text" name="text" rows="4" required></textarea>
+        <div id="descriptionErrorMessage" class="error-message"></div>
+      </div>
+ 
+      <div class="form-field">
+        <label for="image">Upload Image:</label>
+        <input
+          type="file"
+          id="image"
+          name="image"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpeg,.jpg"
+          onchange="previewImage(event)"
+        />
+        <div id="imageErrorMessage" class="error-message"></div>
+      </div>
+ 
+      <button onclick="createPost()">Create Post</button>
+    </div>
+ 
+    <script>
+      const posts = [];
+      const postsPerPage = 2;
+      let currentPage = 1;
+      let editingPostId = null;
+ 
+      function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+ 
+        if (file) {
+          const fileType = file.type;
+          const fileSize = file.size;
+ 
+          const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+          const validDocumentTypes = [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          ];
+ 
+          if (fileSize > 500 * 1024) {
+            document.getElementById("imageErrorMessage").textContent =
+              "File size exceeds the 500KB limit. Please upload a smaller file.";
+            return;
+          } else {
+            document.getElementById("imageErrorMessage").textContent = "";
+          }
+ 
+          if (validImageTypes.includes(fileType)) {
+            reader.onload = function (e) {};
+            reader.readAsDataURL(file);
+          } else if (validDocumentTypes.includes(fileType)) {
+            document.getElementById(
+              "filePreviewContainer"
+            ).textContent = `File: ${file.name}`;
+          } else {
+            document.getElementById("imageErrorMessage").textContent =
+              "Invalid file type. Please upload a valid image or document.";
+          }
+        }
+      }
+ 
+      function createPost() {
+        const title = document.getElementById("title").value;
+        const text = document.getElementById("text").value;
+        const image = document.getElementById("image").files[0];
+ 
+        document.getElementById("titleErrorMessage").textContent = "";
+        document.getElementById("descriptionErrorMessage").textContent = "";
+        document.getElementById("imageErrorMessage").textContent = "";
+ 
+        let validationErrors = false;
+ 
+        if (!title) {
+          document.getElementById("titleErrorMessage").textContent =
+            "Please enter a title.";
+          validationErrors = true;
+        }
+ 
+        if (!text) {
+          document.getElementById("descriptionErrorMessage").textContent =
+            "Please enter a description.";
+          validationErrors = true;
+        }
+ 
+        if (!image) {
+          document.getElementById("imageErrorMessage").textContent =
+            "Please choose a file to upload.";
+          validationErrors = true;
+        }
+ 
+        if (validationErrors) return;
+ 
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("text", text);
+        if (image) formData.append("image", image);
+ 
+        const method = editingPostId ? "PUT" : "POST";
+        const url = editingPostId ? `/posts/${editingPostId}` : "/posts";
+ 
+        fetch(url, {
+          method,
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: formData,
+        })
+          .then((data) => {
+            if (data.ok) {
+              window.location.href = "/index";
+            } else {
+              console.error("Error saving post", data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error creating or updating post", error);
+          });
+      }
+ 
+      function resetForm() {
+        document.getElementById("title").value = "";
+        document.getElementById("text").value = "";
+        document.getElementById("image").value = "";
+        editingPostId = null;
+        document.querySelector(".post-form").style.display = "none";
+      }
+ 
+      function logout() {
+        fetch("/logout", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+          .then((data) => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+          })
+          .catch((error) => {
+            console.error("Error while logging out", error);
+          });
+      }
+    </script>
+  </body>
+</html>
