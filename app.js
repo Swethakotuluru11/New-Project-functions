@@ -16,12 +16,7 @@ const uri = "mongodb://localhost:27017";
 mongoose.connect(uri, { dbName: "userDashboard" });
  
 const User = mongoose.model("User", {username: String,email: String,password: String,firstName: String,lastName: String,mobile: String,gender: String,dob: Date,address: String,zipcode: String,country: String,city: String,state: String,});
-const Post = mongoose.model("Post", {
-  userId: mongoose.Schema.Types.ObjectId,
-  title: String,
-  text: String,
-  imageUrl: String,
-});
+const Post = mongoose.model("Post", {userId: mongoose.Schema.Types.ObjectId,title: String,text: String,imageUrl: String,});
  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
