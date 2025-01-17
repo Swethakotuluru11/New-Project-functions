@@ -58,18 +58,7 @@
         animation-delay: 0.5s;
       }
  
-      /* Background animation */
-      .background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, #ff6b81, #ffecb3, #c1c8e4);
-        animation: gradient 0.5s ease infinite;
-        z-index: -1;
-      }
- 
+      
       /* Fade-in animation */
       @keyframes fadeIn {
         from {
@@ -80,39 +69,7 @@
         }
       }
  
-      /* Gradient animation for background */
-      @keyframes gradient {
-        0% {
-          background: linear-gradient(45deg, #ff6b81, #ffecb3, #c1c8e4);
-        }
-        50% {
-          background: linear-gradient(45deg, #a1c4fd, #c2e9fb, #f1c6c2);
-        }
-        100% {
-          background: linear-gradient(45deg, #ff6b81, #ffecb3, #c1c8e4);
-        }
-      }
- 
-      /* Media Query for mobile responsiveness */
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2.2em;
-        }
- 
-        p {
-          font-size: 1em;
-        }
- 
-        .button-link {
-          font-size: 1em;
-          padding: 10px 20px;
-        }
- 
-        .main-content {
-          padding: 30px;
-        }
-      }
- 
+    
       #addPostBtn {
         margin: 20px 0;
         padding: 10px 20px;

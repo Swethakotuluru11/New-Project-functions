@@ -1,443 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .auth-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .auth-form input,
-        .auth-form select,
-        .auth-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .auth-form input.error {
-            border-color: red;
-        }
-
-        .auth-form button {
-            background-color: #0077cc;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .auth-form button:hover {
-            background-color: #005faa;
-        }
-
-        p {
-            margin-top: 20px;
-            font-size: 1.2em;
-        }
-
-        p a {
-            color: #0077cc;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        p a:hover {
-            text-decoration: underline;
-        }
-         /* Error message box styles */
-         .error-box {
-            display: none; /* Hidden by default */
-            padding: 15px;
-            margin-top: 20px;
-            background-color: #f8d7da;
-            color: #1f1d1c;
-            border: 1px solid #f5c6cb;
-            border-radius: 5px;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.9em;
-            display: none;
-        }
-
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Register</h1>
-         <!-- Error message box -->
-        <div id="errorBox" class="error-box"></div>
-        <br>
-        <form action="/register" method="post" class="auth-form" id="registerForm" onsubmit="return validateForm()">
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName">
-            <div id="firstNameError" class="error-message">Please enter a valid first name.</div>
-
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName">
-            <div id="lastNameError" class="error-message">Please enter a valid last name.</div>
-
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email">
-            <div id="emailError" class="error-message">Please enter a valid email address.</div>
-
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username">
-            <div id="usernameError" class="error-message">Please enter a valid username.</div>
-
-            <label for="mobile">Mobile Number:</label>
-            <input type="tel" id="mobile" name="mobile" maxlength="10" oninput="validateMobileNumber()">
-            <div id="mobileError" class="error-message">Please enter a valid mobile number (10 digits only).</div>
-           
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender">
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-            </select>
-            <div id="genderError" class="error-message">Please select your gender.</div>
-
-            <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob">
-             <div id="dobError" style="display:none; color: red;">Please Enter a valid DOB(atleast  18 years old).</div>
-
-            <label for="address">Address:</label>
-            <textarea id="address" name="address" rows="3"></textarea>
-            <div id="addressError" class="error-message">Please enter your address.</div>
-
-            <label for="zipcode">Zip Code:</label>
-            <input type="text" id="zipcode" name="zipcode" maxlength="6">
-            <div id="zipcodeError" class="error-message">Please enter your zip code.</div>
-
-            <label for="country">Country:</label>
-            <input type="text" id="country" name="country">
-            <div id="countryError" class="error-message">Please enter your country.</div>
-
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city">
-            <div id="cityError" class="error-message">Please enter your city.</div>
-
-            <label for="state">State:</label>
-            <input type="text" id="state" name="state">
-            <div id="stateError" class="error-message">Please enter your state.</div>
-
-            <label for="password">Password:</label>
-           <input type="password" id="password" name="password">
-           <div id="passwordError" class="error-message" style="display:none;">Passwor must contain uppercase , lowercase and special chracters.</div>
-
-            <label for="confirmPassword">Confirm Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword">
-            <div id="confirmPasswordError" class="error-message">Passwords do not match.</div>
-
-            <button type="submit">Register</button>
-        </form>
-
-        <p>Already have an account? <a href="/login">Login here</a>.</p>
-    </div>
-
-    <script>
-    
-        function validateForm() {
-            let isValid = true;
-
-            // Clear all previous error messages
-            const errorFields = document.querySelectorAll('.error-message');
-            errorFields.forEach(field => field.style.display = 'none');
-
-            // Remove red borders for all fields
-            const fields = document.querySelectorAll('input, select, textarea');
-            fields.forEach(field => field.classList.remove('error'));
-
-            // Validate First Name
-            const firstName = document.getElementById('firstName').value;
-            if (!firstName) {
-                document.getElementById('firstNameError').style.display = 'block';
-                document.getElementById('firstName').classList.add('error');
-                isValid = false;
-            }
-
-            // Validate Last Name
-            const lastName = document.getElementById('lastName').value;
-            if (!lastName) {
-                document.getElementById('lastNameError').style.display = 'block';
-                document.getElementById('lastName').classList.add('error');
-                isValid = false;
-            }
-
-            // Validate Email
-            const email = document.getElementById('email').value;
-            if (!email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-                document.getElementById('emailError').style.display = 'block';
-                document.getElementById('email').classList.add('error');
-                isValid = false;
-            }
-
-            // Validate Username
-            const username = document.getElementById('username').value;
-            if (!username) {
-                document.getElementById('usernameError').style.display = 'block';
-                document.getElementById('username').classList.add('error');
-                isValid = false;
-            }
-
-        // Validate Mobile Number      
-        const mobileField = document.getElementById('mobile');
-        //const mobileField = document.getElementById('mobile');
-
-         // Prevent typing letters in the mobile number input
-        mobileField.addEventListener('keypress', function(event) {
-        const keyCode = event.which || event.keyCode;
-
-    // Allow only numbers (key codes 48 to 57 represent 0 to 9)
-      if (keyCode < 48 || keyCode > 57) {
-         event.preventDefault(); // Prevent any key that is not a number
-         }
-         });
-        const mobileValue = mobileField.value;
-        const mobilePattern = /^[0-9]{0,10}$/; // Allow only digits (up to 10)
-
-        // If the value doesn't match the pattern, remove non-numeric characters
-        if (!mobilePattern.test(mobileValue)) {
-            mobileField.value = mobileValue.replace(/[^0-9]/g, ''); // Remove non-numeric characters
-        }
-
-        // Show error if mobile number is not valid
-        const mobileError = document.getElementById('mobileError');
-        if (mobileField.value.length !== 10) {
-            mobileError.style.display = 'block';
-            mobileField.classList.add('error');
-        } else {
-            mobileError.style.display = 'none';
-            mobileField.classList.remove('error');
-        }
-
-            // Validate Gender
-            const gender = document.getElementById('gender').value;
-            if (!gender) {
-                document.getElementById('genderError').style.display = 'block';
-                document.getElementById('gender').classList.add('error');
-                isValid = false;
-            }
-
-          
-        // Get the date of birth (DOB) input field and the error element
-         const dobField = document.getElementById('dob');
-         const dobError = document.getElementById('dobError');
-         isValid = true;
-
-        // Get the value from the DOB input field
-        const dob = dobField.value;
-
-          // Check if the DOB is empty
-       if (!dob) {
-           dobError.style.display = 'block';
-           dobField.classList.add('error');
-           isValid = false; // Set isValid to false if DOB is empty
-      } else {
-      // Get the current date
-      const currentDate = new Date();
-    
-      // Convert DOB string to a Date object
-    const dobDate = new Date(dob);
-    
-    // Calculate the age by comparing the current year with the DOB year
-    let age = currentDate.getFullYear() - dobDate.getFullYear();
-    
-    // Check if the current date is before the birthday this year
-    const monthDifference = currentDate.getMonth() - dobDate.getMonth();
-    const dayDifference = currentDate.getDate() - dobDate.getDate();
-
-    // If birthday hasn't happened yet this year, subtract one from the age
-    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-        age--;
-    }
-
-    // Check if the user is at least 18 years old
-    if (age < 18) {
-        dobError.style.display = 'block';
-        dobField.classList.add('error');
-        isValid = false; // Set isValid to false if the user is under 18
-    } else {
-        dobError.style.display = 'none';
-        dobField.classList.remove('error');
-    }
-}
-
-         // Validate Address
-         const address = document.getElementById('address').value;
-        if (!address) {
-             document.getElementById('addressError').style.display = 'block';
-             document.getElementById('address').classList.add('error');
-              isValid = false;
-        }
-        
-            //validate zipcode
-        const zipcodeField = document.getElementById('zipcode');
-        zipcodeField.addEventListener('keypress', function(event) {
-        const keyCode = event.which || event.keyCode;
-
-    // Allow only numbers (key codes 48 to 57 represent 0 to 9)
-    if (keyCode < 48 || keyCode > 57) {
-        event.preventDefault(); // Prevent any key that is not a number
-    }
-   });
-        const zipcodeValue = zipcodeField.value;
-        // const zipcodePattern = /^[0-9]{0,6}$/; // Allow only digits (up to 6)
-        const zipcodePattern = /^[0-9]{6}$/;
-        // If the value doesn't match the pattern, remove non-numeric characters
-        if (!zipcodePattern.test(zipcodeValue)) {
-            // zipcodeField.value = zipcodeValue.replace(/[^0-6]/g, '');
-            //  // Remove non-numeric characters
-            zipcodeField.value = zipcodeValue.replace(/[^0-9]/g, '').slice(0, 6);
-
-        }
-
-        // Show error if mobile number is not valid
-        const zipcodeError = document.getElementById('zipcodeError');
-        if (zipcodeField.value.length !== 6) {
-            zipcodeError.style.display = 'block';
-            zipcodeField.classList.add('error');
-        } else {
-            zipcodeError.style.display = 'none';
-            zipcodeField.classList.remove('error');
-        }
-
-            // // Validate Zip Code
-            // const zipcode = document.getElementById('zipcode').value;
-            // if (!zipcode) {
-            //     document.getElementById('zipcodeError').style.display = 'block';
-            //     document.getElementById('zipcode').classList.add('error');
-            //     isValid = false;
-            // }
-
-            // Validate Country
-            const country = document.getElementById('country').value;
-            if (!country) {
-                document.getElementById('countryError').style.display = 'block';
-                document.getElementById('country').classList.add('error');
-                isValid = false;
-            }
-
-            // Validate City
-            const city = document.getElementById('city').value;
-            if (!city) {
-                document.getElementById('cityError').style.display = 'block';
-                document.getElementById('city').classList.add('error');
-                isValid = false;
-            }
-
-            // Validate State
-            const state = document.getElementById('state').value;
-            if (!state) {
-                document.getElementById('stateError').style.display = 'block';
-                document.getElementById('state').classList.add('error');
-                isValid = false;
-            }
-
-           const password = document.getElementById('password').value;
-        
-            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{4,10}$/;
-
-         if (!password) {
-            document.getElementById('passwordError').style.display = 'block';
-            document.getElementById('passwordError').textContent = 'Please enter a password.';
-            document.getElementById('password').classList.add('error');
-            isValid = false;
-        } else if (!passwordPattern.test(password)) {
-           document.getElementById('passwordError').style.display = 'block';
-           document.getElementById('passwordError').textContent = 'Passwor must contain uppercase , lowercase and special chracters.';
-           document.getElementById('password').classList.add('error');
-           isValid = false;
-      } else {
-           document.getElementById('passwordError').style.display = 'none';
-        document.getElementById('password').classList.remove('error');
-}         
-
-// Validate Confirm Password
-const confirmPassword = document.getElementById('confirmPassword').value;
-if (!confirmPassword || confirmPassword !== password) {
-    document.getElementById('confirmPasswordError').style.display = 'block';
-    document.getElementById('confirmPasswordError').textContent = 'Passwords must match.';
-    document.getElementById('confirmPassword').classList.add('error');
-    isValid = false;
-} else {
-    document.getElementById('confirmPasswordError').style.display = 'none';
-    document.getElementById('confirmPassword').classList.remove('error');
-}
-
-
-            return isValid;
-        }
-
-        // Add event listeners to remove error state when user starts typing
-        document.getElementById('firstName').addEventListener('input', clearErrorState);
-        document.getElementById('lastName').addEventListener('input', clearErrorState);
-        document.getElementById('email').addEventListener('input', clearErrorState);
-        document.getElementById('username').addEventListener('input', clearErrorState);
-        document.getElementById('mobile').addEventListener('input', clearErrorState);
-        document.getElementById('gender').addEventListener('change', clearErrorState);
-        document.getElementById('dob').addEventListener('input', clearErrorState);
-        document.getElementById('address').addEventListener('input', clearErrorState);
-        document.getElementById('zipcode').addEventListener('input', clearErrorState);
-        document.getElementById('country').addEventListener('input', clearErrorState);
-        document.getElementById('city').addEventListener('input', clearErrorState);
-        document.getElementById('state').addEventListener('input', clearErrorState);
-        document.getElementById('password').addEventListener('input', clearErrorState);
-        document.getElementById('confirmPassword').addEventListener('input', clearErrorState);
-
-        function clearErrorState(e) {
-            const field = e.target;
-            const errorMessage = document.getElementById(`${field.id}Error`);
-            field.classList.remove('error');
-            errorMessage.style.display = 'none';
-        }
-        function displayErrorMessage(message) {
-          const errorBox = document.getElementById('errorBox');
-          errorBox.innerHTML = message;  // Set the error message
-          errorBox.style.display = 'block';  // Show the error box
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f8f8f8;
+        margin: 0;
       }
  
-      // Check if error message exists (sent from the backend)
-      window.onload = function () {
-          const urlParams = new URLSearchParams(window.location.search);
-          const errorMessage = urlParams.get('error');  // Get 'error' parameter from the URL
+      .container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
  
-          if (errorMessage) {
-              displayErrorMessage(errorMessage);  // Display the error message in the error box
+      h1 {
+        color: #333;
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+ 
+      .auth-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+ 
+      .auth-form input,
+      .auth-form select,
+      .auth-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+ 
+      .auth-form input.error {
+        border-color: red;
+      }
+ 
+      .auth-form button {
+        background-color: #0077cc;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+ 
+      .auth-form button:hover {
+        background-color: #005faa;
+      }
+ 
+      p {
+        margin-top: 20px;
+        font-size: 1.2em;
+      }
+ 
+      p a {
+        color: #0077cc;
+        font-weight: bold;
+        text-decoration: none;
+      }
+ 
+      p a:hover {
+        text-decoration: underline;
+      }
+ 
+      .error-box {
+        display: none;
+        padding: 15px;
+        margin-top: 20px;
+        background-color: #f8d7da;
+        color: #1f1d1c;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+      }
+ 
+      .error-message {
+        color: red;
+        font-size: 0.9em;
+        display: none;
+      }
+    </style>
+  </head>
+ 
+  <body>
+    <div class="container">
+      <h1>Register</h1>
+ 
+      <div id="errorBox" class="error-box"></div>
+      <br />
+      <form
+        action="/register"
+        method="post"
+        class="auth-form"
+        id="registerForm"
+        onsubmit="return validateForm()"
+      >
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" />
+        <div id="firstNameError" class="error-message">
+          Please enter a valid first name.
+        </div>
+ 
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" />
+        <div id="lastNameError" class="error-message">
+          Please enter a valid last name.
+        </div>
+ 
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" />
+        <div id="emailError" class="error-message">
+          Please enter a valid email address.
+        </div>
+ 
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" />
+        <div id="usernameError" class="error-message">
+          Please enter a valid username.
+        </div>
+ 
+        <label for="mobile">Mobile Number:</label>
+        <input type="tel" id="mobile" maxlength="10" name="mobile" />
+        <div id="mobileError" class="error-message">
+          Please enter a valid mobile number (10 digits only).
+        </div>
+ 
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+        <div id="genderError" class="error-message">
+          Please select your gender.
+        </div>
+ 
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" />
+        <div id="dobError" class="error" style="display: none; color: red">
+          You must be at least 18 years old.
+        </div>
+ 
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="3"></textarea>
+        <div id="addressError" class="error-message">
+          Please enter your address.
+        </div>
+ 
+        <label for="zipcode">Zip Code:</label>
+        <input type="text" id="zipcode" maxlength="6" name="zipcode" />
+        <div id="zipcodeError" class="error-message">
+          Please enter your zip code.
+        </div>
+ 
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" />
+        <div id="countryError" class="error-message">
+          Please enter your country.
+        </div>
+ 
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" />
+        <div id="cityError" class="error-message">Please enter your city.</div>
+ 
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" />
+        <div id="stateError" class="error-message">
+          Please enter your state.
+        </div>
+ 
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" />
+        <div id="passwordError" class="error-message" style="display: none">
+          Password must be exactly 10 characters long and include letters,
+          numbers, and special characters.
+        </div>
+ 
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" />
+        <div id="confirmPasswordError" class="error-message">
+          Passwords do not match.
+        </div>
+ 
+        <button type="submit">Register</button>
+      </form>
+ 
+      <p>Already have an account? <a href="/login">Login here</a>.</p>
+    </div>
+ 
+    <script>
+      function validateForm() {
+        let isValid = true;
+ 
+        const errorFields = document.querySelectorAll(".error-message");
+        errorFields.forEach((field) => (field.style.display = "none"));
+ 
+        const fields = document.querySelectorAll("input, select, textarea");
+        fields.forEach((field) => field.classList.remove("error"));
+ 
+        const firstName = document.getElementById("firstName").value;
+        if (!firstName) {
+          document.getElementById("firstNameError").style.display = "block";
+          document.getElementById("firstName").classList.add("error");
+          isValid = false;
+        }
+ 
+        const lastName = document.getElementById("lastName").value;
+        if (!lastName) {
+          document.getElementById("lastNameError").style.display = "block";
+          document.getElementById("lastName").classList.add("error");
+          isValid = false;
+        }
+ 
+        const email = document.getElementById("email").value;
+        if (
+          !email ||
+          !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+        ) {
+          document.getElementById("emailError").style.display = "block";
+          document.getElementById("email").classList.add("error");
+          isValid = false;
+        }
+ 
+        const username = document.getElementById("username").value;
+        if (!username) {
+          document.getElementById("usernameError").style.display = "block";
+          document.getElementById("username").classList.add("error");
+          isValid = false;
+        }
+ 
+        const mobileField = document.getElementById("mobile");
+ 
+        mobileField.addEventListener("keypress", function (event) {
+          const keyCode = event.which || event.keyCode;
+ 
+          if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault();
           }
+        });
+        const mobileValue = mobileField.value;
+        const mobilePattern = /^[0-9]{0,10}$/;
+ 
+        if (!mobilePattern.test(mobileValue)) {
+          mobileField.value = mobileValue.replace(/[^0-9]/g, "");
+        }
+ 
+        const mobileError = document.getElementById("mobileError");
+        if (mobileField.value.length !== 10) {
+          mobileError.style.display = "block";
+          mobileField.classList.add("error");
+        } else {
+          mobileError.style.display = "none";
+          mobileField.classList.remove("error");
+        }
+ 
+        const gender = document.getElementById("gender").value;
+        if (!gender) {
+          document.getElementById("genderError").style.display = "block";
+          document.getElementById("gender").classList.add("error");
+          isValid = false;
+        }
+ 
+        isValid = true;
+ 
+        const dobField = document.getElementById("dob");
+        const dobError = document.getElementById("dobError");
+ 
+        const dob = dobField.value;
+ 
+        if (!dob) {
+          dobError.style.display = "block";
+          dobField.classList.add("error");
+          isValid = false;
+        } else {
+          const currentDate = new Date();
+ 
+          const dobDate = new Date(dob);
+ 
+          let age = currentDate.getFullYear() - dobDate.getFullYear();
+ 
+          const monthDifference = currentDate.getMonth() - dobDate.getMonth();
+          const dayDifference = currentDate.getDate() - dobDate.getDate();
+ 
+          if (
+            monthDifference < 0 ||
+            (monthDifference === 0 && dayDifference < 0)
+          ) {
+            age--;
+          }
+ 
+          if (age < 18) {
+            dobError.style.display = "block";
+            dobField.classList.add("error");
+            isValid = false;
+            dobError.style.display = "none";
+            dobField.classList.remove("error");
+          }
+        }
+ 
+        const address = document.getElementById("address").value;
+        if (!address) {
+          document.getElementById("addressError").style.display = "block";
+          document.getElementById("address").classList.add("error");
+          isValid = false;
+        }
+ 
+        const zipcodeField = document.getElementById("zipcode");
+        zipcodeField.addEventListener("keypress", function (event) {
+          const keyCode = event.which || event.keyCode;
+ 
+          if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault();
+          }
+        });
+        const zipcodeValue = zipcodeField.value;
+ 
+        const zipcodePattern = /^[0-9]{6}$/;
+ 
+        if (!zipcodePattern.test(zipcodeValue)) {
+          zipcodeField.value = zipcodeValue.replace(/[^0-9]/g, "").slice(0, 6);
+        }
+ 
+        const zipcodeError = document.getElementById("zipcodeError");
+        if (zipcodeField.value.length !== 6) {
+          zipcodeError.style.display = "block";
+          zipcodeField.classList.add("error");
+        } else {
+          zipcodeError.style.display = "none";
+          zipcodeField.classList.remove("error");
+        }
+ 
+        const country = document.getElementById("country").value;
+        if (!country) {
+          document.getElementById("countryError").style.display = "block";
+          document.getElementById("country").classList.add("error");
+          isValid = false;
+        }
+ 
+        const city = document.getElementById("city").value;
+        if (!city) {
+          document.getElementById("cityError").style.display = "block";
+          document.getElementById("city").classList.add("error");
+          isValid = false;
+        }
+ 
+        const state = document.getElementById("state").value;
+        if (!state) {
+          document.getElementById("stateError").style.display = "block";
+          document.getElementById("state").classList.add("error");
+          isValid = false;
+        }
+ 
+        const password = document.getElementById("password").value;
+        const passwordPattern =
+          //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{10}$/;
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{4,10}$/;
+ 
+        if (!password) {
+          document.getElementById("passwordError").style.display = "block";
+          document.getElementById("passwordError").textContent =
+            "Please enter a password.";
+          document.getElementById("password").classList.add("error");
+          isValid = false;
+        } else if (!passwordPattern.test(password)) {
+          document.getElementById("passwordError").style.display = "block";
+          document.getElementById("passwordError").textContent =
+            "Password must be exactly 10 characters long, and include uppercase letters, lowercase letters, numbers, and special characters.";
+          document.getElementById("password").classList.add("error");
+          isValid = false;
+        } else {
+          document.getElementById("passwordError").style.display = "none";
+          document.getElementById("password").classList.remove("error");
+        }
+ 
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        if (!confirmPassword || confirmPassword !== password) {
+          document.getElementById("confirmPasswordError").style.display =
+            "block";
+          document.getElementById("confirmPasswordError").textContent =
+            "Passwords must match.";
+          document.getElementById("confirmPassword").classList.add("error");
+          isValid = false;
+        } else {
+          document.getElementById("confirmPasswordError").style.display =
+            "none";
+          document.getElementById("confirmPassword").classList.remove("error");
+        }
+ 
+        return isValid;
+      }
+ 
+      document
+        .getElementById("firstName")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("lastName")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("email")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("username")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("mobile")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("gender")
+        .addEventListener("change", clearErrorState);
+      document.getElementById("dob").addEventListener("input", clearErrorState);
+      document
+        .getElementById("address")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("zipcode")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("country")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("city")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("state")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("password")
+        .addEventListener("input", clearErrorState);
+      document
+        .getElementById("confirmPassword")
+        .addEventListener("input", clearErrorState);
+ 
+      function clearErrorState(e) {
+        const field = e.target;
+        const errorMessage = document.getElementById(`${field.id}Error`);
+        field.classList.remove("error");
+        errorMessage.style.display = "none";
+      }
+      function displayErrorMessage(message) {
+        const errorBox = document.getElementById("errorBox");
+        errorBox.innerHTML = message;
+        errorBox.style.display = "block";
+      }
+ 
+      window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorMessage = urlParams.get("error");
+ 
+        if (errorMessage) {
+          displayErrorMessage(errorMessage);
+          x;
+        }
       };
     </script>
-</body>
+  </body>
 </html>
